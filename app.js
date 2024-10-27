@@ -74,6 +74,7 @@ app.post('/generate-ticket', async (req, res) => {
 
 app.get('/ticket/:id', requiresAuth(), async (req, res) => {
     const { id } = req.params;
+    const user = req.oidc.user;
 
     try {
         const result = await pool.query('SELECT vatin, firstname, lastname, created_at FROM tickets WHERE id = $1', [id]);
@@ -83,6 +84,7 @@ app.get('/ticket/:id', requiresAuth(), async (req, res) => {
 
         const ticket = result.rows[0];
         res.send(`
+            <p>Ulogiran kao: ${user.name}</p>
             <p>OIB: ${ticket.vatin}</p>
             <p>Ime: ${ticket.firstname}</p>
             <p>Prezime: ${ticket.lastname}</p>
